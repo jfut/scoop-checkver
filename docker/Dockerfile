@@ -11,7 +11,8 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p $SCOOP_HOME \
-    && git clone https://github.com/lukesampson/scoop.git /scoop/apps/scoop/current
+    && git clone https://github.com/lukesampson/scoop.git /scoop/apps/scoop/current \
+    && install -d -m 700 /root/.ssh
 
 COPY checkver-all.ps1 /scoop/
 
