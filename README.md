@@ -31,8 +31,6 @@ docker run --rm -it -v $PWD/buckets:/scoop/buckets scoop-checkver
 Build a docker image on your host.
 
 ```
-cd docker
-docker build -t scoop-checkver -f Dockerfile .
-cd ..
+pushd docker; docker build -t scoop-checkver -f Dockerfile .; popd
 ```
 
