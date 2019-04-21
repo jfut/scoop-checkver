@@ -7,7 +7,7 @@ ENV SCOOP_HOME /scoop/apps/scoop/current
 ENV PATH $PATH:$SCOOP_HOME/bin
 
 RUN apt-get update \
-    && apt-get install -y git \
+    && apt-get install -y curl git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p $SCOOP_HOME \
