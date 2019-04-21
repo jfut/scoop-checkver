@@ -14,8 +14,7 @@ RUN apt-get update \
     && git clone https://github.com/lukesampson/scoop.git /scoop/apps/scoop/current \
     && install -d -m 700 /root/.ssh
 
-COPY checkver-all.ps1 /scoop/
 COPY bin /scoop/bin
 
-CMD ["pwsh", "/scoop/checkver-all.ps1"]
+CMD ["pwsh", "/scoop/bin/checkver-all.ps1"]
 

@@ -2,5 +2,5 @@
 #
 # A post script for scoop checkver
 
-#echo "checkver-post: OK"
+# do nothing
 

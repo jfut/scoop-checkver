@@ -1,6 +1,21 @@
-#!/bin/sh
+#!/bin/bash -ue
 #
 # A pre script for scoop checkver
+#
+# environment:
+#
+#   - AUTOUPDATE="yes"
+#   - GIT_USER_EMAIL="you@example.com"
+#   - GIT_USER_NAME="Your Name"
 
-#echo "checkver-pre: OK"
+AUTOUPDATE=${AUTOUPDATE:-no}
+
+if [[ "${AUTOUPDATE}" = "yes" ]]; then
+    GIT_USER_EMAIL=${GIT_USER_EMAIL:-you@example.com}
+    GIT_USER_NAME=${GIT_USER_NAME:-Your Name}
+
+    echo "Setup git config user.email and user.name"
+    git config --global user.email "${GIT_USER_EMAIL}"
+    git config --global user.name "${GIT_USER_NAME}"
+fi
 

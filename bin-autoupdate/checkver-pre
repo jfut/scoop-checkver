@@ -1,8 +1,0 @@
-#!/bin/bash -ue
-#
-# A pre script for scoop checkver
-
-echo "Setup git config user.email and user.name"
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-

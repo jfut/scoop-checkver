@@ -1,6 +1,112 @@
 #!/bin/bash -ue
 #
-# A handle script for scoop checkver
+# A handler script for scoop checkver
+#
+# environment:
+#
+#   - ECHO="all"
+#     - all: print all (default)
+#     - update-only: print update only
+#
+#   - AUTOUPDATE="yes"
+#
+#   - SLACK="yes"
+#   - SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxxxx/xxxx/xxxxx
+#   - SLACK_USERNAME="scoop-checkver"
+#   - SLACK_CHANNEL="#integ-test"
+#   - SLACK_ICON_EMOJI=":robot_face:"
 
-cat -
+ECHO=${ECHO:-all}
+
+AUTOUPDATE=${AUTOUPDATE:-no}
+
+SLACK=${SLACK:-no}
+SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+SLACK_USERNAME=${SLACK_USERNAME:-scoop-checkver}
+SLACK_CHANNEL=${SLACK_CHANNEL:-general}
+SLACK_ICON_EMOJI=${SLACK_ICON_EMOJI-:robot_face:}
+
+checkver_slack() {
+    local BUCKET_DIR="${1}"
+    local RESULT="${2}"
+
+    IFS=$'\n'
+    local BUCKET_NAME="${BUCKET_DIR##*/}"
+    local UPDATE_TEXT=$(echo "${RESULT}" | egrep "scoop version|couldn't match" | sed 's/^/:new: /g')
+    local TEXT=":label: Bucket: ${BUCKET_NAME}\n${UPDATE_TEXT}"
+
+    if [[ -z "${SLACK_WEBHOOK_URL}" ]]; then
+        echo "Skip: SLACK_WEBHOOK_URL env is empty."
+    else
+        curl -X POST \
+            --data-urlencode "payload={\"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"text\": \"${TEXT}\", \"icon_emoji\": \"${SLACK_ICON_EMOJI}\"}" \
+            "${SLACK_WEBHOOK_URL}"
+    fi
+}
+
+checkver_autoupdate() {
+    local BUCKET_DIR="${1}"
+    local RESULT="${2}"
+
+    pushd "${BUCKET_DIR}" > /dev/null
+
+    IFS=$'\n'
+    for i in $(echo "${RESULT}" | egrep "scoop version|couldn't match")
+    do
+        echo $i
+        MANIFEST=$(echo ${i} | cut -d':' -f 1)
+        VERSION=$(echo ${i} | awk '{ print $2 }')
+        echo pwsh "bin/checkver.ps1" -u "${MANIFEST}"
+        pwsh "bin/checkver.ps1" -u "${MANIFEST}"
+        git add "${MANIFEST}.json"
+        git commit -m "Update ${MANIFEST} to version ${VERSION}"
+        echo
+    done
+
+    popd > /dev/null
+}
+
+checkver_echo() {
+    local BUCKET_DIR="${1}"
+    local RESULT="${2}"
+
+    if [[ "${ECHO}" = "all" ]]; then
+        echo "${RESULT}"
+    elif [[ "${ECHO}" = "update-only" ]]; then
+        echo "${RESULT}" | egrep "scoop version|couldn't match"
+    fi
+}
+
+checkver_handle() {
+    local BUCKET_DIR="${1}"
+    local RESULT="${2}"
+
+    checkver_echo "${BUCKET_DIR}" "${RESULT}"
+
+    if [[ "${AUTOUPDATE}" = "yes" ]]; then
+        echo "Auto updating..."
+        checkver_autoupdate "${BUCKET_DIR}" "${RESULT}"
+    fi
+
+    if [[  "${SLACK}" = "yes" ]]; then
+        echo "Posting to Slack..."
+        checkver_slack "${BUCKET_DIR}" "${RESULT}"
+    fi
+}
+
+# Main
+main() {
+    local BUCKET_DIR="${1:-}"
+
+    local RESULT=""
+    if [[ -p /dev/stdin ]]; then
+        RESULT="$(cat -)"
+    else
+        shift
+        RESULT="${@}"
+    fi
+    checkver_handle "${BUCKET_DIR}" "${RESULT}"
+}
+
+[ ${#BASH_SOURCE[@]} = 1 ] && main "${@}"
 
