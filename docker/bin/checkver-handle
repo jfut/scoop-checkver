@@ -58,10 +58,14 @@ checkver_autoupdate() {
         echo "${i}"
         MANIFEST=$(echo ${i} | cut -d':' -f 1)
         VERSION=$(echo ${i} | awk '{ print $2 }')
+
         echo pwsh "bin/checkver.ps1" -u "${MANIFEST}"
         pwsh "bin/checkver.ps1" -u "${MANIFEST}" > /dev/null
-        git add "${MANIFEST}.json"
-        git commit -m "Update ${MANIFEST} to version ${VERSION}"
+
+        if [[ -d "${BUCKET_DIR}/.git" ]]; then
+            git add "${MANIFEST}.json"
+            git commit -m "Update ${MANIFEST} to version ${VERSION}"
+        fi
         echo
     done
 
