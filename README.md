@@ -31,20 +31,21 @@ docker run --rm -it -v $PWD/buckets:/scoop/buckets jfut/scoop-checkver
 
 - docker-compose
 - environment:
-  - ECHO="all"
+  - ECHO: "all" | "update-only" | "none"
     - all: print all (default)
     - update-only: print update only
-  - AUTOUPDATE="yes"
-  - GIT_USER_EMAIL="you@example.com"
-  - GIT_USER_NAME="Your Name"
-  - SLACK="yes"
-  - SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxxxx/xxxx/xxxxx
-  - SLACK_USERNAME="scoop-checkver"
-  - SLACK_CHANNEL="#integ-test"
-  - SLACK_ICON_EMOJI=":robot_face:"
+  - AUTOUPDATE: "yes" | "no" (default)
+  - GIT_USER_EMAIL: "you@example.com"
+  - GIT_USER_NAME: "Your Name"
+  - SLACK: "yes" | "no" (default)
+  - SLACK_WEBHOOK_URL: https://hooks.slack.com/services/xxxxx/xxxx/xxxxx
+  - SLACK_USERNAME: "scoop-checkver"
+  - SLACK_CHANNEL: "#integ-test"
+  - SLACK_ICON_EMOJI: ":robot_face:"
+
+Create `docker-compose.yml`:
 
 ```
-cat < '_EOF_' > docker-compose.yml
 version: '3'
 
 services:
@@ -55,17 +56,20 @@ services:
       - ./buckets:/scoop/buckets
       #- ./bin-custom:/scoop/bin
     environment:
-      - ECHO="all"
-      - AUTOUPDATE="no"
-      - GIT_USER_EMAIL="you@example.com"
-      - GIT_USER_NAME="Your Name"
-      - SLACK="no"
-      - SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxxxx/xxxxx/xxxxx
-      - SLACK_USERNAME="scoop-checkver"
-      - SLACK_CHANNEL="#general"
-      - SLACK_ICON_EMOJI=":robot_face:"
-_EOF_
+      ECHO: "all"
+      AUTOUPDATE: "no"
+      GIT_USER_EMAIL: "you@example.com"
+      GIT_USER_NAME: "Your Name"
+      SLACK: "no"
+      SLACK_WEBHOOK_URL: https://hooks.slack.com/services/xxxxx/xxxxx/xxxxx
+      SLACK_USERNAME: "scoop-checkver"
+      SLACK_CHANNEL: "#general"
+      SLACK_ICON_EMOJI: ":robot_face:"
+```
 
+Run it:
+
+```
 docker-compose up
 ```
 
