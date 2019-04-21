@@ -31,7 +31,7 @@ docker run --rm -it -v $PWD/buckets:/scoop/buckets jfut/scoop-checkver
 
 ```
 git clone https://github.com/jfut/scoop-checkver.git
-mv scoop-checkver/bin-autoupdate /path/to
+cp -a scoop-checkver/bin-autoupdate /path/to
 
 cd /path/to
 docker run --rm -it -v $PWD/buckets:/scoop/buckets -v $PWD/bin-autoupdate:/scoop/bin jfut/scoop-checkver
