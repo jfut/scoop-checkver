@@ -2,7 +2,7 @@
 #
 # A autoupdate handler script for scoop checkver
 
-checkver_handle() {
+checkver_autoupdate() {
     BUCKET_DIR="$1"
 
     pushd "${BUCKET_DIR}" > /dev/null
@@ -23,9 +23,12 @@ checkver_handle() {
     popd > /dev/null
 }
 
-if [[ -p /dev/stdin ]]; then
-    cat -
-else
-    echo ${@}
-fi | checkver_handle $1
+# Main
+main() {
+    if [[ -p /dev/stdin ]]; then
+        cat -
+    else
+        echo ${@}
+    fi | checkver_autoupdate $1
+}
 
