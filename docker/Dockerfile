@@ -15,5 +15,7 @@ RUN apt-get update \
     && install -d -m 700 /root/.ssh
 
 COPY checkver-all.ps1 /scoop/
+COPY bin /scoop/bin
 
 CMD ["pwsh", "/scoop/checkver-all.ps1"]
+

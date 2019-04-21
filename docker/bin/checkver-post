@@ -1,0 +1,6 @@
+#!/bin/bash -ue
+#
+# A post script for scoop checkver
+
+#echo "checkver-post: OK"
+

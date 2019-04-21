@@ -1,0 +1,6 @@
+#!/bin/bash -ue
+#
+# A handle script for scoop checkver
+
+cat -
+
