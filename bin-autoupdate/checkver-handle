@@ -1,0 +1,31 @@
+#!/bin/bash -ue
+#
+# A autoupdate handler script for scoop checkver
+
+checkver_handle() {
+    BUCKET_DIR="$1"
+
+    pushd "${BUCKET_DIR}" > /dev/null
+
+    IFS=$'\n'
+    for i in $(cat - | egrep "scoop version|couldn't match")
+    do
+        echo $i
+        MANIFEST=$(echo ${i} | cut -d':' -f 1)
+        VERSION=$(echo ${i} | awk '{ print $2 }')
+        echo pwsh "bin/checkver.ps1" -u "${MANIFEST}"
+        pwsh "bin/checkver.ps1" -u "${MANIFEST}"
+        git add "${MANIFEST}.json"
+        git commit -m "Update ${MANIFEST} to version ${VERSION}"
+        echo
+    done
+
+    popd > /dev/null
+}
+
+if [[ -p /dev/stdin ]]; then
+    cat -
+else
+    echo ${@}
+fi | checkver_handle $1
+
