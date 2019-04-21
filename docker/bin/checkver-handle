@@ -55,6 +55,7 @@ checkver_autoupdate() {
     IFS=$'\n'
     for i in $(echo "${RESULT}" | egrep "scoop version|couldn't match")
     do
+        echo "${i}"
         MANIFEST=$(echo ${i} | cut -d':' -f 1)
         VERSION=$(echo ${i} | awk '{ print $2 }')
         echo pwsh "bin/checkver.ps1" -u "${MANIFEST}"
