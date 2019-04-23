@@ -1,4 +1,4 @@
-#!/bin/bash -ue
+#!/bin/bash -u
 #
 # A handler script for scoop checkver
 #
