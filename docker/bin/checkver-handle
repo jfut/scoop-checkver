@@ -62,7 +62,9 @@ checkver_autoupdate() {
         echo pwsh "bin/checkver.ps1" -u "${MANIFEST}"
         pwsh "bin/checkver.ps1" -u "${MANIFEST}" > /dev/null
 
-        if [[ -d "${BUCKET_DIR}/.git" ]]; then
+        git status > /dev/null 2>&1
+        local RET=$?
+        if [[ "${RET}" -eq 0 ]]; then
             git add "${MANIFEST}.json"
             git commit -m "Update ${MANIFEST} to version ${VERSION}"
         fi
