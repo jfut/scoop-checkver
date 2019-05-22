@@ -7,7 +7,7 @@ Get-ChildItem /scoop/buckets/ | ForEach-Object {
     if (Test-Path $checkver) {
         write-host -f DarkCyan "Target bucket: $bucket"
         write-host -f Yellow "Updating bucket..."
-        & git --git-dir="$bucket/.git" pull
+        & git --git-dir="$bucket/.git" --work-tree="$bucket" pull
         write-host -f Yellow "Checking bucket..."
         Invoke-Expression "pwsh $checkver | /scoop/bin/checkver-handle $bucket"
     }
