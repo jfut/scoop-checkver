@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   scoop-checkver:
     image: 'jfut/scoop-checkver:latest'
