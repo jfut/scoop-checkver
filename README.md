@@ -29,7 +29,6 @@ docker run --rm -it -v $PWD/buckets:/scoop/buckets jfut/scoop-checkver
 
 ### Run checkver.ps1 with autoupdate and Slack post in all buckets
 
-- docker-compose
 - environment:
   - ECHO: "all" | "update-only" | "none"
     - all: print all (default)
@@ -43,11 +42,9 @@ docker run --rm -it -v $PWD/buckets:/scoop/buckets jfut/scoop-checkver
   - SLACK_CHANNEL: "#integ-test"
   - SLACK_ICON_EMOJI: ":robot_face:"
 
-Create `docker-compose.yml`:
+Create `compose.yaml`:
 
 ```
-version: '3'
-
 services:
   scoop-checkver:
     image: 'jfut/scoop-checkver:latest'
@@ -70,7 +67,7 @@ services:
 Run it:
 
 ```
-docker-compose up
+docker compose up
 ```
 
 ## Build a docker image
