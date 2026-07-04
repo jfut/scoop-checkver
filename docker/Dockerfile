@@ -1,14 +1,13 @@
 # https://mcr.microsoft.com/product/powershell
-FROM mcr.microsoft.com/powershell:lts-7.2-mariner-2.0
+FROM mcr.microsoft.com/powershell:lts-7.4-mariner-2.0
 
-MAINTAINER Jun Futagawa <jfut@integ.jp>
 LABEL maintainer="Jun Futagawa <jfut@integ.jp>"
 
-ENV SCOOP_HOME /scoop/apps/scoop/current
-ENV PATH $PATH:$SCOOP_HOME/bin
+ENV SCOOP_HOME=/scoop/apps/scoop/current
+ENV PATH=$PATH:$SCOOP_HOME/bin
 
 RUN tdnf -y update \
-    && tdnf -y install git \
+    && tdnf -y install git jq \
     && tdnf clean all \
     && mkdir -p $SCOOP_HOME \
     && git clone https://github.com/lukesampson/scoop.git /scoop/apps/scoop/current \

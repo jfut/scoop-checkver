@@ -30,20 +30,41 @@ checkver_slack() {
     local BUCKET_DIR="${1}"
     local RESULT="${2}"
 
-    IFS=$'\n'
     local BUCKET_NAME="${BUCKET_DIR##*/}"
-    local UPDATE_TEXT=$(echo "${RESULT}" | egrep "scoop version|couldn't match" | sed 's/^/:new: /g')
-    local TEXT=":label: Bucket: ${BUCKET_NAME}\n${UPDATE_TEXT}"
+    local UPDATE_TEXT
+    UPDATE_TEXT=$(echo "${RESULT}" | grep -E "scoop version|couldn't match" | sed 's/^/:new: /g')
+
+    local TEXT
+    TEXT=":label: Bucket: ${BUCKET_NAME}
+${UPDATE_TEXT}"
 
     if [[ -z "${SLACK_WEBHOOK_URL}" ]]; then
         echo "Skip: SLACK_WEBHOOK_URL env is empty."
-    else
-        if [[ ! -z "${UPDATE_TEXT}" ]]; then
-            curl -X POST \
-                --data-urlencode "payload={\"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"text\": \"${TEXT}\", \"icon_emoji\": \"${SLACK_ICON_EMOJI}\"}" \
-                "${SLACK_WEBHOOK_URL}"
-        fi
+        return
     fi
+
+    if [[ -z "${UPDATE_TEXT}" ]]; then
+        return
+    fi
+
+    local PAYLOAD
+    PAYLOAD=$(jq -n \
+        --arg channel "${SLACK_CHANNEL}" \
+        --arg username "${SLACK_USERNAME}" \
+        --arg text "${TEXT}" \
+        --arg icon_emoji "${SLACK_ICON_EMOJI}" \
+        '{
+            channel: $channel,
+            username: $username,
+            text: $text,
+            icon_emoji: $icon_emoji
+        }')
+
+    echo "${PAYLOAD}" | jq .
+    curl -sS -X POST \
+        -H 'Content-Type: application/json' \
+        --data "${PAYLOAD}" \
+        "${SLACK_WEBHOOK_URL}"
 }
 
 checkver_autoupdate() {
