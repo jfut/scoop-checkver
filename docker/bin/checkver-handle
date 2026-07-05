@@ -74,7 +74,7 @@ checkver_autoupdate() {
     pushd "${BUCKET_DIR}" > /dev/null
 
     IFS=$'\n'
-    for i in $(echo "${RESULT}" | egrep "scoop version|couldn't match")
+    for i in $(echo "${RESULT}" | grep -E "scoop version|couldn't match")
     do
         echo "${i}"
         MANIFEST=$(echo ${i} | cut -d':' -f 1)
@@ -102,7 +102,7 @@ checkver_echo() {
     if [[ "${ECHO}" = "all" ]]; then
         echo "${RESULT}"
     elif [[ "${ECHO}" = "update-only" ]]; then
-        echo "${RESULT}" | egrep "scoop version|couldn't match"
+        echo "${RESULT}" | grep -E "scoop version|couldn't match"
     fi
 }
 
