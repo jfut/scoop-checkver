@@ -7,7 +7,7 @@ ENV SCOOP_HOME=/scoop/apps/scoop/current
 ENV PATH=$PATH:$SCOOP_HOME/bin
 
 RUN tdnf -y update \
-    && tdnf -y install git jq \
+    && tdnf -y install awk git jq \
     && tdnf clean all \
     && mkdir -p $SCOOP_HOME \
     && git clone https://github.com/lukesampson/scoop.git /scoop/apps/scoop/current \
@@ -16,4 +16,3 @@ RUN tdnf -y update \
 COPY bin /scoop/bin
 
 CMD ["pwsh", "/scoop/bin/checkver-all.ps1"]
-

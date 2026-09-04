@@ -15,4 +15,3 @@ services:
       - SLACK_USERNAME="scoop-checkver"
       - SLACK_CHANNEL="#general"
       - SLACK_ICON_EMOJI=":robot_face:"
-
