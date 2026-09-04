@@ -79,4 +79,3 @@ pushd docker
 docker build -t scoop-checkver -f Dockerfile .
 popd
 ```
-

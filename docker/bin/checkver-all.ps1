@@ -15,4 +15,3 @@ Get-ChildItem /scoop/buckets/ | ForEach-Object {
 
 write-host -f DarkCyan "Running /scoop/bin/checkver-post script..."
 & /scoop/bin/checkver-post
-
